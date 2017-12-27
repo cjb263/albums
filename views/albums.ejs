@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <link rel="stylesheet" href="/static/css/css.css">
+  <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+   <link rel="stylesheet" type="text/css" href="/static/css/jquery-confirm.css" />
+  <style>
+  .jconfirm.jconfirm-white .jconfirm-bg {background-color: rgba(0, 0, 0, 1);}
+  .badge{background:#ccc;color:black;font-weight:normal;border-radius:2px;}
+  </style>
+  <script src="/static/js/jquery-1.11.0.min.js"></script>
+  <script src="/static/js/jquery-confirm.js"></script>
+  <script src="/static/js/promise.min.js"></script>
+  <script>
+  //创建图片加载模型
+   function modelLoadPhoto(i,folder) {
+        return new Promise(function(resolve, reject) {
+           setTimeout(function(){
+              $.get('./single/'+folder,function(result){
+                if(result.file!=''){
+                  $(".eachphoto").eq(i).attr("src",result.file);
+                  $(".eachfdcount").eq(i).html('&nbsp; ( '+result.len+' )');
+                }else{
+                   $(".eachphoto").eq(i).attr("src",'/static/images/folders.jpg');
+                   $(".eachfdcount").eq(i).text('');
+                }
+            });
+           },300*i);
+        });
+   };
+
+  $(function(){
+
+      //定义1个任务进度
+     var alltask = [];
+
+     //注入任务
+     $(".eachphoto").each(function(i){ 
+        var folder =  $(".eachphoto").eq(i).attr("folder");
+        alltask.push(modelLoadPhoto(i,folder));
+     });
+     
+     //执行队列
+     Promise.all(alltask).then(function(){});
+  });
+
+  //删除相册
+  function DelFolder(folder){
+      $.confirm({
+      title: '删除相册',
+      content: '确认删除相册<b>'+folder+'</b>吗？',
+      confirmButton: '删除',
+      cancelButton: '取消',
+      confirm: function(){
+          $.post('/folder/del/'+folder,function(result){   
+            if(result.status==1){
+               var cm = $.dialog({
+                   title: false,
+                    content: '删除成功'
+                });
+                setTimeout(function(){
+                  window.location.href = window.location.href
+                 },1000);
+            }else{
+              var cm = $.dialog({
+                   title: false,
+                    content: '删除失败，相册存在图片或权限不足'
+                });
+                setTimeout(function(){
+                  cm.close();
+                 },1000);
+            }
+          });
+      }
+    });
+  }
+  </script>
+</head>
+<body>
+  <%-include("menu",{folder:'share'})%>
+  <div class="jumbotron alert alert-warning">
+    <div class="container">
+ <%for(var i=0;i<folders.length;i++){%>
+      <div class="photos">
+        <a href="/photos/<%=folders[i]%>">
+           <img class='eachphoto' folder="<%=folders[i]%>" title="<%=folders[i]%>" src="/static/images/loading.gif" style="width:160px;"><br/>
+          
+        </a>
+         <div class="badge"><%=folders[i]%><span class="eachfdcount"></span></div>
+        <a href="/upload/<%=folders[i]%>" class="btn btn-sm btn-success upload">Upload</a>
+        <% if(folders[i]!='share'){ %>
+          <a href="javascript:DelFolder('<%=folders[i]%>')"><img class="delete" src="/static/images/delete.png"></a>
+        <% } %>    
+      </div>
+      <%}%>
+      <div class="photos">
+      <a href="javascript:addFolder()"><img src="/static/images/folder-add.png"></a>
+       <div class="badge">添加相册</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

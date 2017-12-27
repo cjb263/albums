@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <link rel="stylesheet" href="/static/css/css.css">
+  <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="/static/css/jquery-confirm.css" />
+  <style>
+  .jconfirm.jconfirm-white .jconfirm-bg {background-color: rgba(0, 0, 0, 1);}
+  .photos{width:20%;}
+  </style>
+  <script src="/static/js/jquery-1.11.0.min.js"></script>
+  <script src="/static/js/jquery-confirm.js"></script>
+  <script>
+    //删除图片
+    function Deletes(folder,file){
+
+      $.confirm({
+          title: '删除图片',
+          content: '确认删除图片<b>'+file+'</b>吗？',
+          confirmButton: '删除',
+          cancelButton: '取消',
+          confirm: function(){
+              $.post('/deletefile/'+folder+'/'+file,function(result){   
+                if(result.status==1){
+                   var cm = $.dialog({
+                       title: false,
+                        content: '删除成功'
+                    });
+                    setTimeout(function(){
+                      window.location.href = window.location.href
+                     },1000);
+                }
+              });
+          }
+        });
+    };
+    //显示图片
+    function ShowPhotos(folder,file){
+        var cm = $.confirm({
+            title: false,
+            cancelButton: false,
+            confirmButton: false, 
+            backgroundDismiss: true,
+            animationSpeed: 500,
+            closeIcon:true,
+            backgroundDismiss:false,
+            columnClass: 'bigpiccss',
+            content:function(){
+              var self = this;
+              return $.get('/get/'+folder+'/'+file,function(status){
+                var w = status.width;
+                var h = status.height;
+                self.setContent('<img src="/uploads/'+folder+'/'+file+'"/>');
+              }).done(function(){}).fail(function(){});
+            }
+        });
+        setTimeout(function(){cm.close();},5000);
+    }
+    </script>
+</head>
+<body>
+<!--   <ol class="breadcrumb">
+    <li>
+      <a href="/">Index</a>
+    </li>
+    <li>
+      <a href="/upload/<%=folder%>">Upload</a>
+    </li>
+  </ol> -->
+  <%-include("menu",{folder})%>
+  <div class="topalert">
+    <div class="container">
+    <div class="col-md-12">
+      <div class="col-md-3 left text-left">图片数: <b><%=albums.count%></b> &nbsp;&nbsp;文件总大小:<b><%=albums.sizes%></b>
+      </div>
+      <div class="col-md-9 right text-right">
+        <a href="/upload/<%=folder%>" class="btn btn-info">上传图片到相册</a>
+      </div>
+    </div>
+    <hr/>
+  </div>
+</div>
+<div class="photolist col-md-12 alert alert-warning">
+   <%for(var i=0;i<albums.files.length;i++){%>
+      <div class="photos">
+        <a href="javascript:ShowPhotos('<%=albums.folder%>','<%=albums.files[i]%>')">
+          <img class="photo_group" src="/uploads/<%=albums.folder%>/<%=albums.files[i]%>" style="width:120px;">
+        </a>
+      <div class="filename"><%=albums.files[i]%> (<%=albums.eachsize[i]%>)</div>
+      <a href="javascript:Deletes('<%=folder%>','<%=albums.files[i]%>')"><img class="delete" src="/static/images/delete.png"></a>
+      <a href="javascript:ShowPhotos('<%=albums.folder%>','<%=albums.files[i]%>')"><img class="zoom" src="/static/images/ZOOM.png"></a>
+      </div>
+    <%}%>
+</div>  
+</body>
+</html>

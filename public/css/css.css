@@ -1,0 +1,47 @@
+.topalert:after{
+	content:'';
+	height:100px;
+	clear:both;
+	padding-bottom:100px;
+}
+.filename{width:200px;height:20px;line-height: 20px;overflow: hidden;color:#999; text-align: center;margin:0 auto;}
+.photos{border:2px solid #efefef;border-radius:10px;margin:3px;padding:5px;background: white; 
+ text-align: center;position:relative;display: inline-block; vertical-align: top;
+ width:15%;
+}
+.photos:hover{background: #ebebeb;}
+.photos img{margin:5px;padding:5px;}
+.photos button{margin:5px auto;}
+.photos .upload{
+	position:absolute;
+	right:0px;
+	top:0px;
+	padding:0px;
+	border-radius:0px; 
+	font-size:8pt;
+	border-bottom-left-radius: 10px;
+}
+.photos .delete{
+	position:absolute;
+	bottom:0px;
+	right:0px;
+	padding:0px;
+	border-radius:0px; 
+	font-size:8pt;
+}
+.photos .zoom{
+	width:20px;height: 20px;
+	position:absolute;
+	top:0px;
+	left:0px;
+	padding:0px;
+	border-radius:0px; 
+}
+
+.uploadbar{height:40px;}
+.uploadbar .bigtxt{font-size:20pt;margin:5px;}
+.bigpiccss{
+	width:99%;
+	height:99%;
+}
+b{color:red;font-size:12pt;};
