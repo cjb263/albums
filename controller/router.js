@@ -2,7 +2,7 @@ let photos = require('../models/');
 
 //show folders
 exports.showIndex = (request,response,next)=>{
-	photos.getFolders((folders)=>{
+	photos.getFolders(response,(folders)=>{
 		response.render('albums',{folders});
 	});
 };
@@ -10,7 +10,7 @@ exports.showIndex = (request,response,next)=>{
 //show albums
 exports.showPhotos= (request,response,next)=>{
 	 let folder = request.params.folder;
-	 photos.getPhotos(folder,(albums)=>{
+	 photos.getPhotos(response,folder,(albums)=>{
 		response.render('shows',{albums,folder});
 	 });
 };
@@ -19,7 +19,7 @@ exports.showPhotos= (request,response,next)=>{
 exports.uploadPhotos  = (request,response,next)=>{
 	 let folder = request.params?request.params.folder:'share';
 	 if(request.method.toLowerCase()=='post'){
-	 	photos.uploadFiles(request,'./uploads/'+folder,()=>{
+	 	photos.uploadFiles(request,response,'./uploads/'+folder,()=>{
 	 		response.redirect('/photos/'+folder);
 	 	});
 	 	return;
@@ -36,6 +36,7 @@ exports.uploadPhotos2  = (request,response,next)=>{
 	 	});
 	 	return;
 	 }
+	 console.log(folder);
 	 response.render('upload',{folder});
 };
 
@@ -85,4 +86,10 @@ exports.delFolder = (request,response,next)=>{
 			response.json({status});
 		});
 	};
+};
+//error
+exports.ERROR = (request,response,next)=>{
+	photos.error(400,(statuscode)=>{
+		response.status(statuscode).end();
+	});
 };

@@ -6,8 +6,12 @@ let multer  = require('multer');
 let imagesize = require('image-size');
 let {random,round} = Math;
 //获取相册内容
-exports.getPhotos = (folder,cb)=>{
+exports.getPhotos = (response,folder,cb)=>{
 	fs.readdir('./uploads/'+folder,(error,files)=>{
+		if(error){
+			response.redirect('/');
+			return;
+		}
 		let count = files.length;
 		let tupian = {folder,files:[],eachsize:[],count,sizes:0};
 		files.forEach(function(file){
@@ -22,58 +26,80 @@ exports.getPhotos = (folder,cb)=>{
 	});
 };
 //获取所有相册
-exports.getFolders = (cb)=>{
+exports.getFolders = (response,cb)=>{
 	fs.readdir('./uploads',(error,folders)=>{
-		let folder = [];
-		folders.forEach(function(fd){
-			folder.push(fd);
-		});
-		cb(folder);
+		if(error){
+				response.redirect('/');
+			}else{
+			let folder = [];
+			folders.forEach(function(fd){
+				folder.push(fd);
+			});
+			cb(folder);
+		}
 	});
 };
 //上传图片 formidable
-exports.uploadFiles = (request,uploaddir,cb)=>{
-		let form = new formidable.IncomingForm();
+exports.uploadFiles = (request,response,uploaddir,cb)=>{
+		fs.access(uploaddir,(error)=>{
+			if(error){
+				response.redirect('/');
+			}else{
+					let form = new formidable.IncomingForm();
     	form.uploadDir = uploaddir;
     	form.parse(request, (err, fields, files)=> { 
-    		 //for(let k in files){
-    		   let sd  = time.format(new Date(),'YYYYMMDDHHmmss');
-		       let extname = path.extname(files.tupian.name);
-    		   let oldname = files.tupian.path;
-		       let newname = uploaddir+'/'+sd+extname;
-		       console.log(files.tupian);
-		       fs.renameSync(oldname,newname); 
-		       cb();
-    	});
-    	return;
+			if(error){
+				response.redirect('/');
+				return;
+			}
+		   let sd  = time.format(new Date(),'YYYYMMDDHHmmss');
+	       let extname = path.extname(files.tupian.name);
+		   let oldname = files.tupian.path;
+	       let newname = uploaddir+'/'+sd+extname;
+	       console.log(files.tupian);
+	       fs.renameSync(oldname,newname); 
+	       cb();
+		});
+    	return;	
+			}
+	});
 };
 //上传图片 multer
 exports.uploadFiles2 = (request,response,uploaddir,callback)=>{
-	let storage = multer.diskStorage({
-	destination:  (request, file, cb)=> {
-	    cb(null, uploaddir)
-	  },
-	 filename:  (request, file, cb) =>{
-	    let fileFormat =path.extname(file.originalname);
-	    cb(null, Date.now() + fileFormat);
-	  }
-	});
-	let fileFilter = (request,file,cb)=>{
+	fs.access(uploaddir,(error)=>{
+		if(error)
+		{
+			response.redirect('/');
+		}else{
+			let storage = multer.diskStorage({
+			destination:  (request, file, cb)=> {
+		    cb(null, uploaddir)
+		  },
+		 filename:  (request, file, cb) =>{
+		    let fileFormat =path.extname(file.originalname);
+		    cb(null, Date.now() + fileFormat);
+		  }
+			});
+			let fileFilter = (request,file,cb)=>{
 		if(/^image\/(\w)+$/.test(file.mimetype)){
 			cb(null, true);
 		}else{
 			cb(null,false);
 		}
-	};
-	let upload = multer({storage,fileFilter});
-	let ups = upload.array('tupian');
-	ups(request,response,(error)=>{
-		if(error){
-			throw error;
-		}else{
-			callback();
+			};
+			let upload = multer({storage,fileFilter});
+			let ups = upload.array('tupian');
+			ups(request,response,(error)=>{
+			if(error){
+				response.redirect('/');
+				throw error;
+			}else{
+				callback();
+			}
+			});	
 		}
 	});
+
 };
 //删除图片
 exports.deletFiles = (folder,file,cb)=>{
@@ -87,7 +113,6 @@ exports.deletFiles = (folder,file,cb)=>{
 };
 //删除相册
 exports.getSingleFolder = (folder,cb)=>{
-	
 	fs.readdir('./uploads/'+folder, (error,files)=> {
 		let len = files.length;
 		if(files&&len>0){
@@ -103,6 +128,7 @@ exports.getSinglePhoto = (folder,file,cb)=>{
 	let path = './uploads/'+folder+'/'+file;
 	imagesize(path,(error,pixels)=>{
 		if(error){
+			cb(1,1);
 			return;
 		}
 		cb(
@@ -152,4 +178,8 @@ exports.delFolder = (folder,cb)=>{
 		}
 
 	});
+};
+//错误
+exports.error = (statuscode,cb)=>{
+	cb(statuscode);
 };
