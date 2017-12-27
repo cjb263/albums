@@ -37,7 +37,13 @@
 	padding:0px;
 	border-radius:0px; 
 }
-
+.photos img {
+        transition: All 0.4s ease-in-out;
+}
+.photos img:hover {
+        transform: scale(1.1);
+        -webkit-transform: scale(1.1);
+}
 .uploadbar{height:40px;}
 .uploadbar .bigtxt{font-size:20pt;margin:5px;}
 .bigpiccss{

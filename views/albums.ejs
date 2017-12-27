@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title></title>
+  <title>nodejs+expressjs+multer 相册</title>
   <link rel="stylesheet" href="/static/css/css.css">
   <link rel="stylesheet" href="/static/css/bootstrap.min.css">
    <link rel="stylesheet" type="text/css" href="/static/css/jquery-confirm.css" />
@@ -48,7 +48,7 @@
   });
 
   //删除相册
-  function DelFolder(folder){
+  function DelFolder(pid,folder){
       $.confirm({
       title: '删除相册',
       content: '确认删除相册<b>'+folder+'</b>吗？',
@@ -62,8 +62,9 @@
                     content: '删除成功'
                 });
                 setTimeout(function(){
-                  window.location.href = window.location.href
-                 },1000);
+                  $("#pid_"+pid).remove();
+                   cm.close();
+                },800);
             }else{
               var cm = $.dialog({
                    title: false,
@@ -83,21 +84,22 @@
   <%-include("menu",{folder:'share'})%>
   <div class="jumbotron alert alert-warning">
     <div class="container">
+      <% var k = 0 %>
  <%for(var i=0;i<folders.length;i++){%>
-      <div class="photos">
+      <div class="photos" id="pid_<%=k%>">
         <a href="/photos/<%=folders[i]%>">
-           <img class='eachphoto' folder="<%=folders[i]%>" title="<%=folders[i]%>" src="/static/images/loading.gif" style="width:160px;"><br/>
+           <img class='eachphoto' folder="<%=folders[i]%>" title="<%=folders[i]%>" src="/static/images/loading.gif" height="90"><br/>
           
         </a>
          <div class="badge"><%=folders[i]%><span class="eachfdcount"></span></div>
         <a href="/upload/<%=folders[i]%>" class="btn btn-sm btn-success upload">Upload</a>
-        <% if(folders[i]!='share'){ %>
-          <a href="javascript:DelFolder('<%=folders[i]%>')"><img class="delete" src="/static/images/delete.png"></a>
-        <% } %>    
+        <% if(folders[i]!="share"){ %>
+          <a href="javascript:DelFolder(<%=k%>,'<%=folders[i]%>')"><img class="delete" src="/static/images/delete.png"></a>
+        <% k++;} %>    
       </div>
       <%}%>
       <div class="photos">
-      <a href="javascript:addFolder()"><img src="/static/images/folder-add.png"></a>
+      <a href="javascript:addFolder()"><img src="/static/images/folder-add.png" height="90"></a>
        <div class="badge">添加相册</div>
       </div>
     </div>

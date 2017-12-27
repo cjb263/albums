@@ -5,13 +5,11 @@ let path  =require('path');
 let multer  = require('multer');
 let imagesize = require('image-size');
 let {random,round} = Math;
-
 //获取相册内容
 exports.getPhotos = (folder,cb)=>{
 	fs.readdir('./uploads/'+folder,(error,files)=>{
 		let count = files.length;
 		let tupian = {folder,files:[],eachsize:[],count,sizes:0};
-		
 		files.forEach(function(file){
 			let stat = fs.statSync('./uploads/'+folder+'/'+file);
 			let _size = round(stat.size/1024);
@@ -23,7 +21,6 @@ exports.getPhotos = (folder,cb)=>{
 		cb(tupian);
 	});
 };
-
 //获取所有相册
 exports.getFolders = (cb)=>{
 	fs.readdir('./uploads',(error,folders)=>{
@@ -34,7 +31,6 @@ exports.getFolders = (cb)=>{
 		cb(folder);
 	});
 };
-
 //上传图片 formidable
 exports.uploadFiles = (request,uploaddir,cb)=>{
 		let form = new formidable.IncomingForm();
@@ -79,7 +75,6 @@ exports.uploadFiles2 = (request,response,uploaddir,callback)=>{
 		}
 	});
 };
-
 //删除图片
 exports.deletFiles = (folder,file,cb)=>{
 	fs.unlink('./uploads/'+folder+'/'+file, (error) =>{
