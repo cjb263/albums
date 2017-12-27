@@ -1,13 +1,27 @@
+/**
+ * [photos description]
+ * @type {[type]}
+ */
 let photos = require('../models/');
 
-//show folders
+/**首页
+ * @param  {[type]}
+ * @param  {[type]}
+ * @param  {Function}
+ * @return {[type]}
+ */
 exports.showIndex = (request,response,next)=>{
 	photos.getFolders(response,(folders)=>{
 		response.render('albums',{folders});
 	});
 };
 
-//show albums
+/**相册
+ * @param  {[type]}
+ * @param  {[type]}
+ * @param  {Function}
+ * @return {[type]}
+ */
 exports.showPhotos= (request,response,next)=>{
 	 let folder = request.params.folder;
 	 photos.getPhotos(response,folder,(albums)=>{
@@ -15,7 +29,12 @@ exports.showPhotos= (request,response,next)=>{
 	 });
 };
 
-//upload photos 采用 formidable 模式
+/**上传 formidable
+ * @param  {[type]}
+ * @param  {[type]}
+ * @param  {Function}
+ * @return {[type]}
+ */
 exports.uploadPhotos  = (request,response,next)=>{
 	 let folder = request.params?request.params.folder:'share';
 	 if(request.method.toLowerCase()=='post'){
@@ -27,7 +46,12 @@ exports.uploadPhotos  = (request,response,next)=>{
 	 response.render('upload',{folder});
 };
 
-//upload photos 采用 multer 模式
+/**上传 multer
+ * @param  {[type]}
+ * @param  {[type]}
+ * @param  {Function}
+ * @return {[type]}
+ */
 exports.uploadPhotos2  = (request,response,next)=>{
 	 let folder = request.params?request.params.folder:'share';
 	 if(request.method.toLowerCase()=='post'){
@@ -40,7 +64,12 @@ exports.uploadPhotos2  = (request,response,next)=>{
 	 response.render('upload',{folder});
 };
 
-//delete photos
+/**删除相册
+ * @param  {[type]}
+ * @param  {[type]}
+ * @param  {Function}
+ * @return {[type]}
+ */
 exports.deletePhotos = (request,response,next)=>{
 	if(request.method.toLowerCase()=='post'){
 		photos.deletFiles(request.params.folder,request.params.file,(status)=>{;
@@ -49,7 +78,12 @@ exports.deletePhotos = (request,response,next)=>{
 	};
 };
 
-// get single first folder imgs 
+/**获取相册封面
+ * @param  {[type]}
+ * @param  {[type]}
+ * @param  {Function}
+ * @return {[type]}
+ */
 exports.singleFolder = (request,response,next)=>{
 	if(request.params){
 		photos.getSingleFolder(request.params.folder,(file,len)=>{
@@ -58,7 +92,12 @@ exports.singleFolder = (request,response,next)=>{
 	}
 };
 
-//get single photos
+/**获取单个图片
+ * @param  {[type]}
+ * @param  {[type]}
+ * @param  {Function}
+ * @return {[type]}
+ */
 exports.getSinglePhoto =  (request,response,next)=>{
 	if(request.params){
 		let folder = request.params.folder;
@@ -69,7 +108,12 @@ exports.getSinglePhoto =  (request,response,next)=>{
 	}
 };
 
-//add folder
+/**添加相册
+ * @param  {[type]}
+ * @param  {[type]}
+ * @param  {Function}
+ * @return {[type]}
+ */
 exports.addFolder = (request,response,next)=>{
 	if(request.params){
 		let folder = request.params.folder;
@@ -79,7 +123,12 @@ exports.addFolder = (request,response,next)=>{
 	}
 };
 
-///folder/del/:folder
+/**删除相册
+ * @param  {[type]}
+ * @param  {[type]}
+ * @param  {Function}
+ * @return {[type]}
+ */
 exports.delFolder = (request,response,next)=>{
 	if(request.method.toLowerCase()=='post'){
 		photos.delFolder(request.params.folder,(status)=>{;
@@ -87,7 +136,12 @@ exports.delFolder = (request,response,next)=>{
 		});
 	};
 };
-//error
+/**容错处理
+ * @param  {[type]}
+ * @param  {[type]}
+ * @param  {Function}
+ * @return {[type]}
+ */
 exports.ERROR = (request,response,next)=>{
 	photos.error(400,(statuscode)=>{
 		response.status(statuscode).end();

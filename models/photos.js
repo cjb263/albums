@@ -1,11 +1,39 @@
+/**
+ * [fs description]
+ * @type {[type]}
+ */
 let fs = require('fs');
+/**
+ * [formidable description]
+ * @type {[type]}
+ */
 let formidable = require('formidable');
-let time = require('silly-datetime');
+/**
+ * [path description]
+ * @type {[type]}
+ */
 let path  =require('path');
+/**
+ * [multer description]
+ * @type {[type]}
+ */
 let multer  = require('multer');
+/**
+ * [imagesize description]
+ * @type {[type]}
+ */
 let imagesize = require('image-size');
+/**
+ * 
+ */
 let {random,round} = Math;
-//获取相册内容
+
+/**获取相册内容
+ * @param  {[type]}
+ * @param  {[type]}
+ * @param  {Function}
+ * @return {[type]}
+ */
 exports.getPhotos = (response,folder,cb)=>{
 	fs.readdir('./uploads/'+folder,(error,files)=>{
 		if(error){
@@ -25,7 +53,11 @@ exports.getPhotos = (response,folder,cb)=>{
 		cb(tupian);
 	});
 };
-//获取所有相册
+/**获取所有相册
+ * @param  {[type]}
+ * @param  {Function}
+ * @return {[type]}
+ */
 exports.getFolders = (response,cb)=>{
 	fs.readdir('./uploads',(error,folders)=>{
 		if(error){
@@ -39,20 +71,26 @@ exports.getFolders = (response,cb)=>{
 		}
 	});
 };
-//上传图片 formidable
+/**上传图片 formidable
+ * @param  {[type]}
+ * @param  {[type]}
+ * @param  {[type]}
+ * @param  {Function}
+ * @return {[type]}
+ */
 exports.uploadFiles = (request,response,uploaddir,cb)=>{
 		fs.access(uploaddir,(error)=>{
 			if(error){
 				response.redirect('/');
 			}else{
 					let form = new formidable.IncomingForm();
-    	form.uploadDir = uploaddir;
-    	form.parse(request, (err, fields, files)=> { 
+    		form.uploadDir = uploaddir;
+    		form.parse(request, (err, fields, files)=> { 
 			if(error){
 				response.redirect('/');
 				return;
 			}
-		   let sd  = time.format(new Date(),'YYYYMMDDHHmmss');
+		   let sd  = new Date();
 	       let extname = path.extname(files.tupian.name);
 		   let oldname = files.tupian.path;
 	       let newname = uploaddir+'/'+sd+extname;
@@ -61,10 +99,16 @@ exports.uploadFiles = (request,response,uploaddir,cb)=>{
 	       cb();
 		});
     	return;	
-			}
+		}
 	});
 };
-//上传图片 multer
+/**上传图片 multer
+ * @param  {[type]}
+ * @param  {[type]}
+ * @param  {[type]}
+ * @param  {Function}
+ * @return {[type]}
+ */
 exports.uploadFiles2 = (request,response,uploaddir,callback)=>{
 	fs.access(uploaddir,(error)=>{
 		if(error)
@@ -101,7 +145,12 @@ exports.uploadFiles2 = (request,response,uploaddir,callback)=>{
 	});
 
 };
-//删除图片
+/**删除图片
+ * @param  {[type]}
+ * @param  {[type]}
+ * @param  {Function}
+ * @return {[type]}
+ */
 exports.deletFiles = (folder,file,cb)=>{
 	fs.unlink('./uploads/'+folder+'/'+file, (error) =>{
 		if(error){
@@ -111,7 +160,11 @@ exports.deletFiles = (folder,file,cb)=>{
 		}
 	})
 };
-//删除相册
+/**删除相册
+ * @param  {[type]}
+ * @param  {Function}
+ * @return {[type]}
+ */
 exports.getSingleFolder = (folder,cb)=>{
 	fs.readdir('./uploads/'+folder, (error,files)=> {
 		let len = files.length;
@@ -123,7 +176,12 @@ exports.getSingleFolder = (folder,cb)=>{
 		}
 	})
 };
-//获取图片大小
+/**获取图片大小
+ * @param  {[type]}
+ * @param  {[type]}
+ * @param  {Function}
+ * @return {[type]}
+ */
 exports.getSinglePhoto = (folder,file,cb)=>{
 	let path = './uploads/'+folder+'/'+file;
 	imagesize(path,(error,pixels)=>{
@@ -136,7 +194,11 @@ exports.getSinglePhoto = (folder,file,cb)=>{
 		);
 	});
 }
-//增加相册
+/**增加相册
+ * @param  {[type]}
+ * @param  {Function}
+ * @return {[type]}
+ */
 exports.addFolder = (folder,cb)=>{
 	//只允许英文
 	let  reg =/^[A-Za-z]+$/g;
@@ -155,7 +217,11 @@ exports.addFolder = (folder,cb)=>{
 		cb(-1);
 	}
 };
-//删除相册
+/**删除相册
+ * @param  {[type]}
+ * @param  {Function}
+ * @return {[type]}
+ */
 exports.delFolder = (folder,cb)=>{
 	let path = './uploads/'+folder;
 	fs.readdir(path, (error,files)=>{
@@ -179,7 +245,11 @@ exports.delFolder = (folder,cb)=>{
 
 	});
 };
-//错误
+/**错误
+ * @param  {[type]}
+ * @param  {Function}
+ * @return {[type]}
+ */
 exports.error = (statuscode,cb)=>{
 	cb(statuscode);
 };
