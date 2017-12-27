@@ -14,3 +14,7 @@
 
 案例采用了部分ES6语法，例如 let {random,round} = Math； 
 不了解的朋友去看看 [es6解构](http://es6.ruanyifeng.com/#docs/destructuring#%E5%AF%B9%E8%B1%A1%E7%9A%84%E8%A7%A3%E6%9E%84%E8%B5%8B%E5%80%BC)
+
+###### 项目解构
+  - Albums
+  - controller
