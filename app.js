@@ -23,7 +23,7 @@ app.get('/photos/:folder',router.showPhotos);
 //app.use('/upload/:folder',router.uploadPhotos);
 
 //upload 采用 multer 模式
-app.use('/upload/:folder',router.uploadPhotos2);
+app.all('/upload/:folder',router.uploadPhotos2);
 
 //delete
 app.post('/deletefile/:folder/:file',router.deletePhotos);
