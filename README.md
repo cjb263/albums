@@ -17,4 +17,10 @@
 
 ###### 项目解构
   - Albums
-  - controller
+   controller
+   models
+   public
+   uploads
+   views
+   app.js
+   package.json
