@@ -60,7 +60,6 @@ exports.uploadPhotos2  = (request,response,next)=>{
 	 	});
 	 	return;
 	 }
-	 console.log(folder);
 	 response.render('upload',{folder});
 };
 
